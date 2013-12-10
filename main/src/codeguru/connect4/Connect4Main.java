@@ -1,10 +1,10 @@
-package app101.game;
+package codeguru.connect4;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
-public class MainActivity extends Activity {
+public class Connect4Main extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
