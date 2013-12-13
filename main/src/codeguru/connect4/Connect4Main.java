@@ -1,15 +1,15 @@
 package codeguru.connect4;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class Connect4Main extends Activity {
+public class Connect4Main extends AndroidApplication {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        this.initialize(new Connect4(), false);
     }
 
 
