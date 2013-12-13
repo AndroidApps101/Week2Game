@@ -5,7 +5,7 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry exported="true" kind="lib" path="/Connect4Lib/libs/gdx.jar"/>
+	<classpathentry kind="lib" path="/Connect4Lib/libs/gdx.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Connect4Lib"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
