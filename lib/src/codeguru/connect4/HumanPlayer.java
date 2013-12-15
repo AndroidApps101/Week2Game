@@ -1,6 +1,5 @@
 package codeguru.connect4;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 
 public class HumanPlayer extends InputAdapter implements Player {

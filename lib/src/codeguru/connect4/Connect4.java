@@ -1,10 +1,8 @@
 package codeguru.connect4;
 
-import com.badlogic.gdx.InputMultiplexer;
-
+import codeguru.connect4.Board.State;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -21,6 +19,7 @@ public class Connect4 implements ApplicationListener {
     private int currPlayer = 0;
     private int diameter = 0;
     private int xMargin = 0;
+    private boolean finished = false;
 
     public void create() {
         if (this.renderer == null) {
@@ -39,14 +38,19 @@ public class Connect4 implements ApplicationListener {
     }
 
     public void render() {
-        Gdx.input.setInputProcessor(this.players[currPlayer]);
-        int move = this.players[this.currPlayer].move(this.board);
-        
-        if (move != -1) {
-            System.out.println("move=" + move);
+        if (!this.finished) {
+            Gdx.input.setInputProcessor(this.players[currPlayer]);
+            int move = this.players[this.currPlayer].move(this.board);
 
-            this.board.move(move);
-            this.currPlayer = (this.currPlayer + 1) % 2;
+            if (move != -1) {
+                System.out.println("move=" + move);
+
+                this.board.move(move);
+                State player = (currPlayer == 0) ? Board.State.PLAYER1
+                        : Board.State.PLAYER2;
+                this.finished = this.board.isWin(player);
+                this.currPlayer = (this.currPlayer + 1) % 2;
+            }
         }
 
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -79,8 +83,8 @@ public class Connect4 implements ApplicationListener {
                 (float) height / (float) Board.ROW_COUNT);
         this.xMargin = ((width - this.diameter * Board.COL_COUNT) / 2);
         int yMargin = ((height - this.diameter * Board.ROW_COUNT) / 2);
-        Gdx.gl.glViewport(this.xMargin, yMargin, width - 2 * this.xMargin, height - 2
-                * yMargin);
+        Gdx.gl.glViewport(this.xMargin, yMargin, width - 2 * this.xMargin,
+                height - 2 * yMargin);
 
         Matrix4 ortho = new Matrix4().setToOrtho2D(0.0f, 0.0f,
                 Board.COL_COUNT * 2.0f, Board.ROW_COUNT * 2.0f);
@@ -99,7 +103,7 @@ public class Connect4 implements ApplicationListener {
     public int getGridSize() {
         return this.diameter;
     }
-    
+
     public int getXMargin() {
         return this.xMargin;
     }

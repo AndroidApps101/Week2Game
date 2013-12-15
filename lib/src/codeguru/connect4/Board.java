@@ -26,7 +26,7 @@ public class Board {
     }
 
     public boolean move(int col) {
-        if (this.next[col] < ROW_COUNT) {
+        if (col >= 0 && col < COL_COUNT && this.next[col] < ROW_COUNT) {
             this.board[this.next[col]][col] = nextPlayer;
             ++this.next[col];
 
@@ -38,10 +38,73 @@ public class Board {
                 nextPlayer = State.PLAYER1;
                 break;
             default:
-                break;
+                return false;
             }
-            
+
             return true;
+        }
+
+        return false;
+    }
+
+    public boolean isWin(State player) {
+        // Check rows
+        for (int row = 0; row < ROW_COUNT; ++row) {
+            int count = 0;
+            for (int col = 0; col < COL_COUNT; ++col) {
+                if (this.board[row][col] == player) {
+                    ++count;
+
+                    if (count == 4) {
+                        return true;
+                    }
+                } else {
+                    count = 0;
+                }
+            }
+        }
+
+        // Check columns
+        for (int col = 0; col < COL_COUNT; ++col) {
+            int count = 0;
+            for (int row = 0; row < ROW_COUNT; ++row) {
+                if (this.board[row][col] == player) {
+                    ++count;
+
+                    if (count == 4) {
+                        return true;
+                    }
+                } else {
+                    count = 0;
+                }
+            }
+        }
+
+        // Check diagonals
+        for (int row = 0; row < ROW_COUNT; ++row) {
+            for (int col = 0; col < COL_COUNT; ++col) {
+                int forwardCount = 0;
+                int backCount = 0;
+                for (int i = 0; i < 4; ++i) {
+                    if (row + i < ROW_COUNT && col + i < COL_COUNT
+                            && this.board[row + i][col + i] == player) {
+                        ++forwardCount;
+                    } else {
+                        forwardCount = 0;
+                    }
+
+                    if (row + i < ROW_COUNT && col - i >= 0
+                            && this.board[row + i][col - i] == player) {
+                        ++backCount;
+                    } else {
+                        backCount = 0;
+                    }
+                }
+
+                if (forwardCount >= 4 || backCount >= 4) {
+                    return true;
+                }
+            }
         }
 
         return false;
