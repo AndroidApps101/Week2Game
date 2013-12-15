@@ -41,7 +41,7 @@ public class Connect4 implements ApplicationListener {
                     renderer.setColor(Color.RED);
                     break;
                 case PLAYER2:
-                    renderer.setColor(Color.RED);
+                    renderer.setColor(Color.BLACK);
                     break;
                 }
 
