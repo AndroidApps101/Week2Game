@@ -2,6 +2,7 @@ package codeguru.connect4;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,6 +15,9 @@ public class Connect4 implements ApplicationListener {
 
     private ShapeRenderer renderer = null;
     private Board board = null;
+    private Player[] players = new Player[2];
+    private int currPlayer = 0;
+    private int diameter;
 
     public void create() {
         if (this.renderer == null) {
@@ -25,9 +29,20 @@ public class Connect4 implements ApplicationListener {
         }
 
         Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+
+        this.players[0] = new HumanPlayer(this);
+        this.players[1] = new HumanPlayer(this);
+        this.currPlayer = 0;
     }
 
     public void render() {
+        int move = this.players[this.currPlayer].move(this.board);
+
+        if (move != -1) {
+            this.board.move(move);
+            this.currPlayer = (this.currPlayer) % 2;
+        }
+
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         renderer.begin(ShapeType.Filled);
@@ -54,10 +69,10 @@ public class Connect4 implements ApplicationListener {
     }
 
     public void resize(int width, int height) {
-        float diameter = Math.min((float) width / (float) Board.COL_COUNT,
+        this.diameter = (int) Math.min((float) width / (float) Board.COL_COUNT,
                 (float) height / (float) Board.ROW_COUNT);
-        int xMargin = (int) ((width - diameter * Board.COL_COUNT) / 2);
-        int yMargin = (int) ((height - diameter * Board.ROW_COUNT) / 2);
+        int xMargin = ((width - this.diameter * Board.COL_COUNT) / 2);
+        int yMargin = ((height - this.diameter * Board.ROW_COUNT) / 2);
         Gdx.gl.glViewport(xMargin, yMargin, width - 2 * xMargin, height - 2
                 * yMargin);
 
@@ -73,5 +88,9 @@ public class Connect4 implements ApplicationListener {
     }
 
     public void dispose() {
+    }
+
+    public int getGridSize() {
+        return this.diameter;
     }
 }
