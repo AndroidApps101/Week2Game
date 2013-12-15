@@ -8,10 +8,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class Connect4 implements ApplicationListener {
-    public static float RADIUS = 25.0f;
-    
     private ShapeRenderer renderer = null;
     private Board board = null;
+    private float radius = 0.0f;
 
     public void create() {
         if (this.renderer == null) {
@@ -21,6 +20,11 @@ public class Connect4 implements ApplicationListener {
         if (this.board == null) {
             this.board = new Board();
         }
+        
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
+        this.radius = Math.min((float) width / (float) Board.COL_COUNT,
+                (float) height / Board.ROW_COUNT) / 2.0f;
     }
 
     public void render() {
@@ -41,10 +45,10 @@ public class Connect4 implements ApplicationListener {
                     renderer.setColor(Color.RED);
                     break;
                 }
-                
-                float x = 2 * col * RADIUS + RADIUS;
-                float y = 2 * row * RADIUS + RADIUS;
-                renderer.circle(x, y, RADIUS);
+
+                float x = (2 * col + 1) * this.radius;
+                float y = (2 * row + 1) * this.radius;
+                renderer.circle(x, y, this.radius);
             }
         }
         renderer.end();
