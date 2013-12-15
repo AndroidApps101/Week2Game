@@ -6,13 +6,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
 
 public class Connect4 implements ApplicationListener {
+    private static float RADIUS = 1.0f;
+    private static int SEGS = 100;
+    
     private ShapeRenderer renderer = null;
     private Board board = null;
-    private float radius = 0.0f;
-    private float leftMargin = 0.0f;
-    private float bottomMargin = 0.0f;
 
     public void create() {
         if (this.renderer == null) {
@@ -22,10 +23,11 @@ public class Connect4 implements ApplicationListener {
         if (this.board == null) {
             this.board = new Board();
         }
+
+        Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     public void render() {
-        Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         renderer.begin(ShapeType.Filled);
@@ -43,26 +45,18 @@ public class Connect4 implements ApplicationListener {
                     break;
                 }
 
-                float x = (2 * col + 1) * this.radius + leftMargin;
-                float y = (2 * row + 1) * this.radius + bottomMargin;
-                renderer.circle(x, y, this.radius);
+                float x = 2 * col + 1;
+                float y = 2 * row + 1;
+                renderer.circle(x, y, RADIUS, SEGS);
             }
         }
         renderer.end();
     }
 
     public void resize(int width, int height) {
-        System.out.println("resize()");
-        System.out.println("  width=" + width);
-        System.out.println("  height=" + height);
-
-        this.radius = Math.min((float) width / (float) Board.COL_COUNT,
-                (float) height / Board.ROW_COUNT) / 2.0f;
-        this.bottomMargin = ((float) height - 2.0f * this.radius
-                * Board.ROW_COUNT) / 2.0f;
-        this.leftMargin = ((float) width - 2.0f * this.radius * Board.COL_COUNT) / 2.0f;
-
-        System.out.println("  radius=" + radius);
+        Matrix4 ortho = new Matrix4().setToOrtho2D(0.0f, 0.0f,
+                Board.COL_COUNT * 2.0f, Board.ROW_COUNT * 2.0f);
+        this.renderer.setProjectionMatrix(ortho);
     }
 
     public void pause() {
