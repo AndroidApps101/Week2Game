@@ -11,6 +11,8 @@ public class Connect4 implements ApplicationListener {
     private ShapeRenderer renderer = null;
     private Board board = null;
     private float radius = 0.0f;
+    private float leftMargin = 0.0f;
+    private float bottomMargin = 0.0f;
 
     public void create() {
         if (this.renderer == null) {
@@ -20,11 +22,6 @@ public class Connect4 implements ApplicationListener {
         if (this.board == null) {
             this.board = new Board();
         }
-        
-        float width = Gdx.graphics.getWidth();
-        float height = Gdx.graphics.getHeight();
-        this.radius = Math.min((float) width / (float) Board.COL_COUNT,
-                (float) height / Board.ROW_COUNT) / 2.0f;
     }
 
     public void render() {
@@ -46,8 +43,8 @@ public class Connect4 implements ApplicationListener {
                     break;
                 }
 
-                float x = (2 * col + 1) * this.radius;
-                float y = (2 * row + 1) * this.radius;
+                float x = (2 * col + 1) * this.radius + leftMargin;
+                float y = (2 * row + 1) * this.radius + bottomMargin;
                 renderer.circle(x, y, this.radius);
             }
         }
@@ -55,6 +52,17 @@ public class Connect4 implements ApplicationListener {
     }
 
     public void resize(int width, int height) {
+        System.out.println("resize()");
+        System.out.println("  width=" + width);
+        System.out.println("  height=" + height);
+
+        this.radius = Math.min((float) width / (float) Board.COL_COUNT,
+                (float) height / Board.ROW_COUNT) / 2.0f;
+        this.bottomMargin = ((float) height - 2.0f * this.radius
+                * Board.ROW_COUNT) / 2.0f;
+        this.leftMargin = ((float) width - 2.0f * this.radius * Board.COL_COUNT) / 2.0f;
+
+        System.out.println("  radius=" + radius);
     }
 
     public void pause() {
