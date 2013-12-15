@@ -1,5 +1,7 @@
 package codeguru.connect4;
 
+import com.badlogic.gdx.InputMultiplexer;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -15,9 +17,10 @@ public class Connect4 implements ApplicationListener {
 
     private ShapeRenderer renderer = null;
     private Board board = null;
-    private Player[] players = new Player[2];
+    private HumanPlayer[] players = new HumanPlayer[2];
     private int currPlayer = 0;
-    private int diameter;
+    private int diameter = 0;
+    private int xMargin = 0;
 
     public void create() {
         if (this.renderer == null) {
@@ -33,12 +36,17 @@ public class Connect4 implements ApplicationListener {
         this.players[0] = new HumanPlayer(this);
         this.players[1] = new HumanPlayer(this);
         this.currPlayer = 0;
+        
+        InputMultiplexer input = new InputMultiplexer(this.players);
+        Gdx.input.setInputProcessor(input);
     }
 
     public void render() {
         int move = this.players[this.currPlayer].move(this.board);
-
+        
         if (move != -1) {
+            System.out.println("move=" + move);
+
             this.board.move(move);
             this.currPlayer = (this.currPlayer) % 2;
         }
@@ -71,9 +79,9 @@ public class Connect4 implements ApplicationListener {
     public void resize(int width, int height) {
         this.diameter = (int) Math.min((float) width / (float) Board.COL_COUNT,
                 (float) height / (float) Board.ROW_COUNT);
-        int xMargin = ((width - this.diameter * Board.COL_COUNT) / 2);
+        this.xMargin = ((width - this.diameter * Board.COL_COUNT) / 2);
         int yMargin = ((height - this.diameter * Board.ROW_COUNT) / 2);
-        Gdx.gl.glViewport(xMargin, yMargin, width - 2 * xMargin, height - 2
+        Gdx.gl.glViewport(this.xMargin, yMargin, width - 2 * this.xMargin, height - 2
                 * yMargin);
 
         Matrix4 ortho = new Matrix4().setToOrtho2D(0.0f, 0.0f,
@@ -92,5 +100,9 @@ public class Connect4 implements ApplicationListener {
 
     public int getGridSize() {
         return this.diameter;
+    }
+    
+    public int getXMargin() {
+        return this.xMargin;
     }
 }
