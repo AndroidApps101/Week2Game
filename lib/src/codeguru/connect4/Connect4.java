@@ -36,19 +36,17 @@ public class Connect4 implements ApplicationListener {
         this.players[0] = new HumanPlayer(this);
         this.players[1] = new HumanPlayer(this);
         this.currPlayer = 0;
-        
-        InputMultiplexer input = new InputMultiplexer(this.players);
-        Gdx.input.setInputProcessor(input);
     }
 
     public void render() {
+        Gdx.input.setInputProcessor(this.players[currPlayer]);
         int move = this.players[this.currPlayer].move(this.board);
         
         if (move != -1) {
             System.out.println("move=" + move);
 
             this.board.move(move);
-            this.currPlayer = (this.currPlayer) % 2;
+            this.currPlayer = (this.currPlayer + 1) % 2;
         }
 
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
