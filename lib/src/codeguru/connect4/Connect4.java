@@ -54,10 +54,10 @@ public class Connect4 implements ApplicationListener {
     }
 
     public void resize(int width, int height) {
-        float radius = Math.min((float) width / (float) Board.COL_COUNT,
-                (float) height / (float) Board.ROW_COUNT) / 2.0f;
-        int xMargin = (int) ((width - 2 * radius * Board.COL_COUNT) / 2);
-        int yMargin = (int) ((height - 2 * radius * Board.ROW_COUNT) / 2);
+        float diameter = Math.min((float) width / (float) Board.COL_COUNT,
+                (float) height / (float) Board.ROW_COUNT);
+        int xMargin = (int) ((width - diameter * Board.COL_COUNT) / 2);
+        int yMargin = (int) ((height - diameter * Board.ROW_COUNT) / 2);
         Gdx.gl.glViewport(xMargin, yMargin, width - 2 * xMargin, height - 2
                 * yMargin);
 
