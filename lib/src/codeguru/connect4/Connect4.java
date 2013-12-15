@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Matrix4;
 public class Connect4 implements ApplicationListener {
     private static float RADIUS = 1.0f;
     private static int SEGS = 100;
-    
+
     private ShapeRenderer renderer = null;
     private Board board = null;
 
@@ -54,6 +54,13 @@ public class Connect4 implements ApplicationListener {
     }
 
     public void resize(int width, int height) {
+        float radius = Math.min((float) width / (float) Board.COL_COUNT,
+                (float) height / (float) Board.ROW_COUNT) / 2.0f;
+        int xMargin = (int) ((width - 2 * radius * Board.COL_COUNT) / 2);
+        int yMargin = (int) ((height - 2 * radius * Board.ROW_COUNT) / 2);
+        Gdx.gl.glViewport(xMargin, yMargin, width - 2 * xMargin, height - 2
+                * yMargin);
+
         Matrix4 ortho = new Matrix4().setToOrtho2D(0.0f, 0.0f,
                 Board.COL_COUNT * 2.0f, Board.ROW_COUNT * 2.0f);
         this.renderer.setProjectionMatrix(ortho);
