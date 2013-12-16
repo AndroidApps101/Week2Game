@@ -1,5 +1,7 @@
 package codeguru.connect4;
 
+import com.badlogic.gdx.InputAdapter;
+
 import codeguru.connect4.Board.State;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -10,6 +12,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 
 public class Connect4 implements ApplicationListener {
+    private enum GameState {
+        START, PLAYING, FINISHED
+    };
+
     private static float RADIUS = 1.0f;
     private static int SEGS = 100;
 
@@ -19,7 +25,7 @@ public class Connect4 implements ApplicationListener {
     private int currPlayer = 0;
     private int diameter = 0;
     private int xMargin = 0;
-    private boolean finished = false;
+    private GameState state = GameState.START;
 
     public void create() {
         if (this.renderer == null) {
@@ -35,10 +41,26 @@ public class Connect4 implements ApplicationListener {
         this.players[0] = new HumanPlayer(this);
         this.players[1] = new HumanPlayer(this);
         this.currPlayer = 0;
+        this.state = GameState.START;
     }
 
     public void render() {
-        if (!this.finished) {
+        switch (this.state) {
+        case START:
+            Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+            Gdx.input.setInputProcessor(new InputAdapter() {
+                @Override
+                public boolean touchUp(int x, int y, int pointer, int button) {
+                    state = GameState.PLAYING;
+                    return true;
+                }
+            });
+            break;
+
+        case PLAYING:
+            Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+            // Make a move
             Gdx.input.setInputProcessor(this.players[currPlayer]);
             int move = this.players[this.currPlayer].move(this.board);
 
@@ -48,34 +70,44 @@ public class Connect4 implements ApplicationListener {
                 this.board.move(move);
                 State player = (currPlayer == 0) ? Board.State.PLAYER1
                         : Board.State.PLAYER2;
-                this.finished = this.board.isWin(player);
-                this.currPlayer = (this.currPlayer + 1) % 2;
-            }
-        }
 
-        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+                System.out.println("player=" + player);
 
-        renderer.begin(ShapeType.Filled);
-        for (int row = 0; row < Board.ROW_COUNT; ++row) {
-            for (int col = 0; col < Board.COL_COUNT; ++col) {
-                switch (this.board.getState(row, col)) {
-                case EMPTY:
-                    renderer.setColor(Color.WHITE);
-                    break;
-                case PLAYER1:
-                    renderer.setColor(Color.RED);
-                    break;
-                case PLAYER2:
-                    renderer.setColor(Color.BLACK);
-                    break;
+                if (this.board.isWin(player)) {
+                    this.state = GameState.FINISHED;
+                } else {
+                    this.currPlayer = (this.currPlayer + 1) % 2;
                 }
-
-                float x = 2 * col + 1;
-                float y = 2 * row + 1;
-                renderer.circle(x, y, RADIUS, SEGS);
             }
+
+            // Draw the board
+            renderer.begin(ShapeType.Filled);
+            for (int row = 0; row < Board.ROW_COUNT; ++row) {
+                for (int col = 0; col < Board.COL_COUNT; ++col) {
+                    switch (this.board.getState(row, col)) {
+                    case EMPTY:
+                        renderer.setColor(Color.WHITE);
+                        break;
+                    case PLAYER1:
+                        renderer.setColor(Color.RED);
+                        break;
+                    case PLAYER2:
+                        renderer.setColor(Color.BLACK);
+                        break;
+                    }
+
+                    float x = 2 * col + 1;
+                    float y = 2 * row + 1;
+                    renderer.circle(x, y, RADIUS, SEGS);
+                }
+            }
+            renderer.end();
+            break;
+
+        case FINISHED:
+            break;
         }
-        renderer.end();
+
     }
 
     public void resize(int width, int height) {
