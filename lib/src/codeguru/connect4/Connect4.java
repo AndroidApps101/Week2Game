@@ -12,13 +12,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 
 public class Connect4 implements ApplicationListener {
+    public enum PlayerType {
+        HUMAN, COMPUTER
+    }
+
     private enum GameState {
         START, PLAYING, FINISHED
-    };
+    }
 
     private static float RADIUS = 1.0f;
     private static int SEGS = 100;
 
+    private PlayerType[] types = null;
     private ShapeRenderer renderer = null;
     private Board board = null;
     private HumanPlayer[] players = new HumanPlayer[2];
@@ -26,6 +31,17 @@ public class Connect4 implements ApplicationListener {
     private int diameter = 0;
     private int xMargin = 0;
     private GameState state = GameState.START;
+
+    /**
+     * Create a new Connect 4 game object with players of the given types.
+     * 
+     * @param types
+     *            An array with two elements indicating whether to play with
+     *            human or computer players.
+     */
+    public Connect4(PlayerType[] types) {
+        this.types = types;
+    }
 
     public void create() {
         if (this.renderer == null) {
@@ -36,8 +52,17 @@ public class Connect4 implements ApplicationListener {
             this.board = new Board();
         }
 
-        this.players[0] = new HumanPlayer(this);
-        this.players[1] = new HumanPlayer(this);
+        for (int i = 0; i < 2; ++i) {
+            switch (this.types[i]) {
+            case HUMAN:
+                this.players[i] = new HumanPlayer(this);
+                break;
+                
+            case COMPUTER:
+                break;
+            }
+        }
+
         this.currPlayer = 0;
         this.state = GameState.START;
     }
