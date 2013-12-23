@@ -52,8 +52,6 @@ public class Connect4 implements ApplicationListener {
             this.board = new Board();
         }
 
-        Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-
         for (int i = 0; i < 2; ++i) {
             switch (this.types[i]) {
             case HUMAN:
@@ -70,9 +68,10 @@ public class Connect4 implements ApplicationListener {
     }
 
     public void render() {
+        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
         switch (this.state) {
         case START:
-            Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
             Gdx.input.setInputProcessor(new InputAdapter() {
                 @Override
                 public boolean touchUp(int x, int y, int pointer, int button) {
@@ -83,8 +82,6 @@ public class Connect4 implements ApplicationListener {
             break;
 
         case PLAYING:
-            Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
             // Make a move
             Gdx.input.setInputProcessor(this.players[currPlayer]);
             int move = this.players[this.currPlayer].move(this.board);
@@ -104,7 +101,9 @@ public class Connect4 implements ApplicationListener {
                     this.currPlayer = (this.currPlayer + 1) % 2;
                 }
             }
+            // Fall through to draw the board
 
+        case FINISHED:
             // Draw the board
             renderer.begin(ShapeType.Filled);
             for (int row = 0; row < Board.ROW_COUNT; ++row) {
@@ -128,14 +127,13 @@ public class Connect4 implements ApplicationListener {
             }
             renderer.end();
             break;
-
-        case FINISHED:
-            break;
         }
 
     }
 
     public void resize(int width, int height) {
+        Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+
         this.diameter = (int) Math.min((float) width / (float) Board.COL_COUNT,
                 (float) height / (float) Board.ROW_COUNT);
         this.xMargin = ((width - this.diameter * Board.COL_COUNT) / 2);
