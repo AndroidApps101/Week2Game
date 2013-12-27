@@ -27,6 +27,12 @@ public class Board {
                 this.board[i][j] = board.board[i][j];
             }
         }
+        
+        for (int i = 0; i < COL_COUNT; ++i) {
+            this.next[i] = board.next[i];
+        }
+        
+        this.nextPlayer = board.nextPlayer;
     }
 
     public State getState(int row, int col) {
@@ -116,5 +122,9 @@ public class Board {
         }
 
         return false;
+    }
+
+    public boolean canMove(int move) {
+        return this.next[move] < ROW_COUNT;
     }
 }

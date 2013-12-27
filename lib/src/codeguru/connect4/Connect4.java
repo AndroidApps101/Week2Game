@@ -1,7 +1,8 @@
 package codeguru.connect4;
 
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 
+import com.badlogic.gdx.InputAdapter;
 import codeguru.connect4.Board.State;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -26,7 +27,7 @@ public class Connect4 implements ApplicationListener {
     private PlayerType[] types = null;
     private ShapeRenderer renderer = null;
     private Board board = null;
-    private HumanPlayer[] players = new HumanPlayer[2];
+    private Player[] players = new Player[2];
     private int currPlayer = 0;
     private int diameter = 0;
     private int xMargin = 0;
@@ -57,8 +58,10 @@ public class Connect4 implements ApplicationListener {
             case HUMAN:
                 this.players[i] = new HumanPlayer(this);
                 break;
-                
+
             case COMPUTER:
+                State computer = i == 0 ? State.PLAYER1 : State.PLAYER2;
+                this.players[i] = new ComputerPlayer(computer);
                 break;
             }
         }
@@ -83,10 +86,14 @@ public class Connect4 implements ApplicationListener {
 
         case PLAYING:
             // Make a move
-            Gdx.input.setInputProcessor(this.players[currPlayer]);
+            if (this.players[currPlayer] instanceof HumanPlayer) {
+                Gdx.input.setInputProcessor((InputProcessor)this.players[currPlayer]);
+            } else {
+                Gdx.input.setInputProcessor(null);
+            }
             int move = this.players[this.currPlayer].move(this.board);
 
-            if (move != -1) {
+            if (move != -1 && this.board.canMove(move)) {
                 System.out.println("move=" + move);
 
                 this.board.move(move);
