@@ -20,6 +20,14 @@ public class Board {
             }
         }
     }
+    
+    public Board(Board board) {
+        for (int i = 0; i < ROW_COUNT; ++i) {
+            for (int j = 0; j < COL_COUNT; ++j) {
+                this.board[i][j] = board.board[i][j];
+            }
+        }
+    }
 
     public State getState(int row, int col) {
         return board[row][col];
