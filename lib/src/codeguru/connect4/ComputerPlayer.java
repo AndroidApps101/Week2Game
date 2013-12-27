@@ -4,7 +4,8 @@ import codeguru.connect4.Board.State;
 
 public class ComputerPlayer implements Player {
 
-    public static final int MAX_DEPTH = 2;
+    public static final int MAX_DEPTH = 6;
+    public static final int[] MOVE_ORDER = new int[]{3, 2, 4, 1, 5, 0, 6};
 
     private State me = null;
     private State opponent = null;
@@ -34,14 +35,14 @@ public class ComputerPlayer implements Player {
         for (int i = 0; i < Board.COL_COUNT; ++i) {
             Board next = new Board(b);
 
-            if (next.canMove(i)) {
-                next.move(i);
+            if (next.canMove(MOVE_ORDER[i])) {
+                next.move(MOVE_ORDER[i]);
 
                 int val = minMax(next, MAX_DEPTH, false);
 
                 if (val > best) {
                     best = val;
-                    move = i;
+                    move = MOVE_ORDER[i];
                 }
             }
         }
@@ -68,8 +69,8 @@ public class ComputerPlayer implements Player {
             for (int i = 0; i < Board.COL_COUNT; ++i) {
                 Board next = new Board(b);
 
-                if (next.canMove(i)) {
-                    next.move(i);
+                if (next.canMove(MOVE_ORDER[i])) {
+                    next.move(MOVE_ORDER[i]);
 
                     int val = minMax(next, depth - 1, false);
                     best = Math.max(best, val);
@@ -83,8 +84,8 @@ public class ComputerPlayer implements Player {
             for (int i = 0; i < Board.COL_COUNT; ++i) {
                 Board next = new Board(b);
 
-                if (next.canMove(i)) {
-                    next.move(i);
+                if (next.canMove(MOVE_ORDER[i])) {
+                    next.move(MOVE_ORDER[i]);
 
                     int val = minMax(next, depth - 1, true);
                     best = Math.min(best, val);
