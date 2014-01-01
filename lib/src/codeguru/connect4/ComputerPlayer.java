@@ -4,7 +4,7 @@ import codeguru.connect4.Board.State;
 
 public class ComputerPlayer implements Player {
 
-    public static final int MAX_DEPTH = 6;
+    public static final int MAX_DEPTH = 5;
     public static final int[] MOVE_ORDER = new int[]{3, 2, 4, 1, 5, 0, 6};
 
     private State me = null;
