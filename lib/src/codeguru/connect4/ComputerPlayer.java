@@ -105,7 +105,7 @@ public class ComputerPlayer implements Player {
             return Integer.MIN_VALUE;
         }
 
-        int score = 10 * twoInARow(b, who);
+        int score = 10 * twoInARow(b, who) + 1000 * threeInARow(b, who);
         return who == this.me ? score : -score;
     }
 
@@ -152,6 +152,75 @@ public class ComputerPlayer implements Player {
         }
 
         return twoInARowCount;
+    }
+
+    private int threeInARow(Board b, State who) {
+        int threeInARowCount = 0;
+        
+        // Check rows
+        for (int row = 0; row < Board.ROW_COUNT; ++row) {
+            int count = 0;
+            for (int col = 0; col < Board.COL_COUNT; ++col) {
+                if (b.getState(row, col) == who) {
+                    ++count;
+
+                    if (count == 3) {
+                        ++threeInARowCount;
+                    }
+                } else {
+                    count = 0;
+                }
+            }
+        }
+
+        // Check columns
+        for (int col = 0; col < Board.COL_COUNT; ++col) {
+            int count = 0;
+            for (int row = 0; row < Board.ROW_COUNT; ++row) {
+                if (b.getState(row, col) == who) {
+                    ++count;
+
+                    if (count == 3) {
+                        ++threeInARowCount;
+                    }
+                } else {
+                    count = 0;
+                }
+            }
+        }
+
+        // Check diagonals
+        for (int row = 0; row < Board.ROW_COUNT; ++row) {
+            for (int col = 0; col < Board.COL_COUNT; ++col) {
+                int forwardCount = 0;
+                int backCount = 0;
+                for (int i = 0; i < 4; ++i) {
+                    if (row + i < Board.ROW_COUNT && col + i < Board.COL_COUNT
+                            && b.getState(row + i, col + i) == who) {
+                        ++forwardCount;
+                    } else {
+                        forwardCount = 0;
+                    }
+
+                    if (row + i < Board.ROW_COUNT && col - i >= 0
+                            && b.getState(row + i, col - i) == who) {
+                        ++backCount;
+                    } else {
+                        backCount = 0;
+                    }
+                }
+
+                if (forwardCount == 3) {
+                    ++threeInARowCount;
+                }
+
+                if (backCount == 3) {
+                    ++threeInARowCount;
+                }
+            }
+        }
+
+        return threeInARowCount;
     }
 
 }
