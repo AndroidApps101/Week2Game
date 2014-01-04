@@ -5,7 +5,7 @@ import codeguru.connect4.Board.State;
 public class ComputerPlayer implements Player {
 
     public static final int MAX_DEPTH = 5;
-    public static final int[] MOVE_ORDER = new int[]{3, 2, 4, 1, 5, 0, 6};
+    public static final int[] MOVE_ORDER = new int[] { 3, 2, 4, 1, 5, 0, 6 };
 
     private State me = null;
     private State opponent = null;
@@ -52,7 +52,9 @@ public class ComputerPlayer implements Player {
 
     private int minMax(Board b, int depth, boolean maximizing) {
         if (depth == 0) {
-            return evaluate(b);
+            State player = MAX_DEPTH % 2 == 0 ? this.opponent : this.me;
+            
+            return evaluate(b, player);
         }
 
         if (b.isWin(this.me)) {
@@ -96,14 +98,60 @@ public class ComputerPlayer implements Player {
         }
     }
 
-    private int evaluate(Board b) {
+    private int evaluate(Board b, State who) {
         if (b.isWin(this.me)) {
             return Integer.MAX_VALUE;
         } else if (b.isWin(this.opponent)) {
             return Integer.MIN_VALUE;
         }
 
-        return 0;
+        int score = 10 * twoInARow(b, who);
+        return who == this.me ? score : -score;
+    }
+
+    private int twoInARow(Board b, State who) {
+        int twoInARowCount = 0;
+
+        // Check rows
+        for (int row = 0; row < Board.ROW_COUNT - 1; ++row) {
+            for (int col = 0; col < Board.COL_COUNT - 1; ++col) {
+                if (b.getState(row, col) == who
+                        && b.getState(row + 1, col) == who) {
+                    ++twoInARowCount;
+                }
+            }
+        }
+
+        // Check cols
+        for (int row = 0; row < Board.ROW_COUNT - 1; ++row) {
+            for (int col = 0; col < Board.COL_COUNT - 1; ++col) {
+                if (b.getState(row, col) == who
+                        && b.getState(row, col + 1) == who) {
+                    ++twoInARowCount;
+                }
+            }
+        }
+
+        // Check diagonals
+        for (int row = 0; row < Board.ROW_COUNT - 1; ++row) {
+            for (int col = 0; col < Board.COL_COUNT - 1; ++col) {
+                if (b.getState(row, col) == who
+                        && b.getState(row + 1, col + 1) == who) {
+                    ++twoInARowCount;
+                }
+            }
+        }
+
+        for (int row = 0; row < Board.ROW_COUNT - 1; ++row) {
+            for (int col = 1; col < Board.COL_COUNT; ++col) {
+                if (b.getState(row, col) == who
+                        && b.getState(row + 1, col - 1) == who) {
+                    ++twoInARowCount;
+                }
+            }
+        }
+
+        return twoInARowCount;
     }
 
 }
