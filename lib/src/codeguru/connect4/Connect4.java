@@ -33,6 +33,19 @@ public class Connect4 implements ApplicationListener {
     private int xMargin = 0;
     private GameState state = GameState.START;
 
+    private InputProcessor startInput = new InputAdapter() {
+        @Override
+        public boolean touchUp(int x, int y, int pointer, int button) {
+            if (state == GameState.FINISHED) {
+                board = new Board();
+                currPlayer = 0;
+            }
+            
+            state = GameState.PLAYING;
+            return true;
+        }
+    };
+    
     /**
      * Create a new Connect 4 game object with players of the given types.
      * 
@@ -75,13 +88,7 @@ public class Connect4 implements ApplicationListener {
 
         switch (this.state) {
         case START:
-            Gdx.input.setInputProcessor(new InputAdapter() {
-                @Override
-                public boolean touchUp(int x, int y, int pointer, int button) {
-                    state = GameState.PLAYING;
-                    return true;
-                }
-            });
+            Gdx.input.setInputProcessor(startInput);
             break;
 
         case PLAYING:
@@ -104,6 +111,7 @@ public class Connect4 implements ApplicationListener {
 
                 if (this.board.isWin(player)) {
                     this.state = GameState.FINISHED;
+                    Gdx.input.setInputProcessor(this.startInput);
                 } else {
                     this.currPlayer = (this.currPlayer + 1) % 2;
                 }
